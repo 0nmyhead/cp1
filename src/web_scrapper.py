@@ -7,6 +7,10 @@ from selenium import webdriver
 def get_pagelist(page_url):
     
     """
+    
+    get (company)pagelist url from https://wanted.co.kr/wdlist/~
+    
+    
     """
     
     driver = webdriver.Chrome()
@@ -20,7 +24,7 @@ def get_pagelist(page_url):
     
     counter = 0
     
-    while counter < 5 :
+    while counter < 1 :
         
         driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
         time.sleep(3)
@@ -42,9 +46,24 @@ def get_pagelist(page_url):
 
 def get_info(page_url):
     
-    return 0
+    driver = webdriver.Chrome()
+    driver.maximize_window()
+    driver.get('https://www.wanted.co.kr'+page_url)
     
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    
+    driver.quit()
+    
+    name = soup.find('h2')
+    
+    return name
 
 url = 'https://www.wanted.co.kr/wdlist/518/655?country=kr&job_sort=job.latest_order&years=-1&locations=all'
 
 plist = get_pagelist(url)
+
+namelist = []
+
+for i in plist:
+    
+    namelist.append(get_info(i))
