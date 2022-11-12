@@ -8,7 +8,7 @@ class WantedScrapper():
         
         self.url = url
 
-    def get_pagelist(page_url):
+    def get_pagelist(self, page_url):
         
         """
         
@@ -49,7 +49,8 @@ class WantedScrapper():
         
         return pagelist
     
-    def get_span_text(item):
+    def get_span_text(self, item):
+        
         """
         
         Parameters
@@ -66,14 +67,21 @@ class WantedScrapper():
         
         text_list = []
         
-        for i in item:
+        try:
+        
+            for i in item:
+                
+                if i.text != '' : text_list.append(i.text)
+        
+        except:
             
-            if i.text != '' : text_list.append(i.text)
+            text_list.append('')
         
         return text_list
     
     
-    def get_info(page_url):
+    def get_info(self, page_url):
+        
         '''
     
         Parameters
@@ -94,43 +102,71 @@ class WantedScrapper():
         driver.implicitly_wait(5)
         
         action = webdriver.ActionChains(driver)
-        action.move_to_element(driver.find_element_by_css_selector('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > hr')).perform()
+        action.move_to_element(driver.find_element_by_css_selector('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > section.CompanyInfo_className__VNf10')).perform()
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         
+        infolist = []
+        strlist = []
+        
         #header_name
+        infolist.append('직무')
         name = soup.select_one('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > section.JobHeader_className__HttDA > h2').text
         print(name)
+        strlist.append(name)
+        
         #company_name
+        infolist.append('회사명')
         company = soup.select_one('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > section.JobHeader_className__HttDA > div:nth-child(2) > h6 > a')["data-company-name"]
         print(company)
-        #주요업무
-        work = soup.select_one('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section > p:nth-child(3) > span')
-        works = get_span_text(work)
-        print(works)
-        #자격요건
-        requirement = soup.select_one('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p:nth-child(5) > span')
-        requirements = get_span_text(requirement)
-        print(requirements)
-        #우대사항
-        advanced = soup.select_one('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p:nth-child(7) > span')
-        advancements = get_span_text(advanced)
-        print(advancements)
-        #혜택
-        benefit = soup.select_one('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p:nth-child(9) > span')
-        benefits = get_span_text(benefit)
-        print(benefits)
-        #기술스택
-        stack = soup.select('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p:nth-child(11) > div > div')
-        stacks = []
-        for i in stack:
-            stacks.append(i.text)
-        print(stacks)
+        strlist.append(company)
+        
+        #info
+        info = soup.select('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > h6')
+        
+        infolist.append('소개')
+        for i in info:
+            
+            print(i.text)
+            infolist.append(i.text)
+
+        texts = soup.select('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p')
+
+        texts = soup.select('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p')
+        spans = soup.select('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p > span')
+        
+        for i in range(len(texts)):
+            
+            temp = []
+        
+            for span in texts[i]:
+                
+                txt = span.text
+                txt.replace('・','•').replace('-','•')
+                txtlist = txt.split('• ')
+                [temp.append(txt) for txt in txtlist if txt != '']
+            
+            strlist.append(temp)
+        
         #마감일
+        infolist.append('마감일')
         outdate = soup.select_one('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobWorkPlace_className__ra6rp > div:nth-child(1) > span.body').text
         print(outdate)
+        strlist.append(outdate)
+        
         #근무지역
+        infolist.append('근무지역')
         loc = soup.select_one('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobWorkPlace_className__ra6rp > div:nth-child(2) > span.body').text
         print(loc)
+        strlist.append(loc)
         driver.quit()
         
-        return {'직무':name,'회사명':company,'주요업무':works,'자격요건':requirements,'우대사항':advancements,'혜택':benefits,'기술스택':stacks,'마감일':outdate,'근무지역':loc}
+        dic = {}
+
+        for i in range(len(infolist)):
+            
+            dic[infolist[i]] = strlist[i]
+        
+        return dic
+    
+# scrapper = WantedScrapper()
+# dic = scrapper.get_info('/wd/111448')
