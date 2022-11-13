@@ -2,6 +2,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from WantedScrapper import WantedScrapper
+import time
 '''
   Add data(dict) to Firestore Database(NoSQL) from scrapped data using by WantedScrapper.py
 
@@ -13,7 +14,7 @@ class Firestore_():
 
     self.url = url
 
-    cred = credentials.Certificate('C:/Users/jg020/Desktop/aib/CP1/cp1/src/conductive-coil-351110-firebase-adminsdk-1is5w-ca0cdf61e0.json')
+    cred = credentials.Certificate('conductive-coil-351110-firebase-adminsdk-1is5w-ca0cdf61e0.json')
     firebase_admin.initialize_app(cred, {
       'projectId': 'conductive-coil-351110',
     })
@@ -26,17 +27,21 @@ class Firestore_():
     pagelist = scrapper.get_pagelist(scrapper.url)
     clist = []
 
+    timenow = time.strftime('%Y-%m-%d', time.localtime())
+
     for i in pagelist:
         
         clist.append(scrapper.get_info(i))
 
     for data in clist:
         
-        self.db.collection(u'wanted').document().set(data)
+        self.db.collection(timenow).document().set(data)
+    
+    return timenow
 
-  def pull_data(self):
+  def pull_data(self, name_col = 'wanted'):
 
-    data = self.db.collection(u'wanted')
+    data = self.db.collection(name_col)
 
     dics = data.stream()
 
@@ -50,9 +55,3 @@ class Firestore_():
       counter += 1
 
     return clist
-
-# firestore = Firestore_()
-
-# company_list = firestore.pull_data()
-
-# print('~')

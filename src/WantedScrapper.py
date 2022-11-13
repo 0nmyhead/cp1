@@ -8,6 +8,10 @@ class WantedScrapper():
         
         self.url = url
 
+        #chrome webdriver headless options for linux nogui
+        self.op = webdriver.ChromeOptions()
+        self.op.add_argument('--headless')
+
     def get_pagelist(self, page_url):
         
         """
@@ -18,7 +22,7 @@ class WantedScrapper():
         
         """
         
-        driver = webdriver.Chrome()
+        driver = webdriver.Chrome(options=self.op)
         driver.maximize_window()
         driver.get(page_url)
         driver.implicitly_wait(5)
@@ -96,7 +100,7 @@ class WantedScrapper():
     
         '''
         
-        driver = webdriver.Chrome()
+        driver = webdriver.Chrome(options=self.op)
         driver.maximize_window()
         driver.get('https://www.wanted.co.kr'+page_url)
         driver.implicitly_wait(5)
@@ -132,6 +136,7 @@ class WantedScrapper():
         texts = soup.select('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p')
 
         texts = soup.select('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p')
+        #never used
         spans = soup.select('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > div.JobContent_descriptionWrapper__SM4UD > section.JobDescription_JobDescription__VWfcb > p > span')
         
         for i in range(len(texts)):
