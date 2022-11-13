@@ -1,6 +1,7 @@
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 class WantedScrapper():
     
@@ -28,9 +29,9 @@ class WantedScrapper():
         driver.maximize_window()
         driver.get(page_url)
         driver.implicitly_wait(5)
-        driver.find_element_by_xpath('//*[@id="__next"]/div[3]/div/div/div[1]/div[1]/div/div[2]/div').click()
+        driver.find_element(By.XPATH, '//*[@id="__next"]/div[3]/div/div/div[1]/div[1]/div/div[2]/div').click()
         driver.implicitly_wait(5)
-        driver.find_element_by_xpath('//*[@id="__next"]/div[3]/div/div/div[1]/div[1]/div/div[2]/div/div[1]/ul/li[1]/button').click()
+        driver.find_element(By.XPATH, '//*[@id="__next"]/div[3]/div/div/div[1]/div[1]/div/div[2]/div/div[1]/ul/li[1]/button').click()
         driver.implicitly_wait(10)
         
         counter = 0
@@ -108,7 +109,7 @@ class WantedScrapper():
         driver.implicitly_wait(5)
         
         action = webdriver.ActionChains(driver)
-        action.move_to_element(driver.find_element_by_css_selector('#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > section.CompanyInfo_className__VNf10')).perform()
+        action.move_to_element(driver.find_element(By.CSS_SELECTOR,'#__next > div.JobDetail_cn__WezJh > div.JobDetail_contentWrapper__DQDB6 > div.JobDetail_relativeWrapper__F9DT5 > div > section.CompanyInfo_className__VNf10')).perform()
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         
         infolist = []
