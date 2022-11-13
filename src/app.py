@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import request
-from firebase_conn import Firestore_
+from firestore_conn import Firestore_
 import json
 app = Flask(__name__)
 
