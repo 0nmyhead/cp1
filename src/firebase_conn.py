@@ -40,11 +40,14 @@ class Firestore_():
 
     dics = data.stream()
 
-    clist = []
+    clist = {}
+
+    counter = 0
 
     for dic in dics:
 
-      clist.append(dic.to_dict())
+      clist[counter] = dic.to_dict()
+      counter += 1
 
     return clist
 
