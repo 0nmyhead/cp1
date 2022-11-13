@@ -11,6 +11,8 @@ class WantedScrapper():
         #chrome webdriver headless options for linux nogui
         self.op = webdriver.ChromeOptions()
         self.op.add_argument('--headless')
+        self.op.add_argument("--no-sandbox")
+        self.op.add_argument("--window-size=1280,720")
 
     def get_pagelist(self, page_url):
         
